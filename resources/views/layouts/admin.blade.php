@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     
 
     <!-- Bootstrap -->
@@ -36,6 +37,9 @@
           </li>
           <li class="nav-item d-sm-inline-block">
             <a href="{{ route('index') }}" class="nav-link">Home Page</a>
+          </li>
+          <li class="nav-item d-sm-inline-block">
+            <a href="{{ route('category.index') }}" class="nav-link">Category</a>
           </li>
         </ul>
         <!-- NAVBAR Sol Taraf END -->
@@ -83,6 +87,12 @@
                 <a href="{{ route('index') }}" class="nav-link">
                   <i class="fas fa-home"></i>
                   <p>Home Page</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('category.index') }}" class="nav-link">
+                  <i class="fas fa-list"></i>
+                  <p>Category</p>
                 </a>
               </li>
              </ul>
