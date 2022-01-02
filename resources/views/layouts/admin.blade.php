@@ -38,9 +38,6 @@
           <li class="nav-item d-sm-inline-block">
             <a href="{{ route('index') }}" class="nav-link">Home Page</a>
           </li>
-          <li class="nav-item d-sm-inline-block">
-            <a href="{{ route('category.index') }}" class="nav-link">Category</a>
-          </li>
         </ul>
         <!-- NAVBAR Sol Taraf END -->
   
@@ -138,14 +135,13 @@
           <a href="{{ route('index') }}">Home Page</a>
       </footer>
       </div>
-
-    @yield('content')
-    
     <!-- REQUIRED SCRIPTS -->
     <!-- Bootstrap -->
     <script src="{{asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <!-- Toastr -->
     <script src="{{asset('assets/plugins/toastr/toastr.min.js')}}"></script>
+    <!-- ChartJs -->
+    <script src="{{asset('assets/plugins/chart.js/Chart.min.js')}}"></script>
     <!-- AdminLTE App -->
     <script src="{{asset('assets/adminLTE/js/adminlte.min.js')}}"></script>
      
