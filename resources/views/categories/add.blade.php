@@ -50,6 +50,8 @@
             
         }else{
             $('#add-form').submit();
+            $('#add').prop('disabled',true);
+
         }
     });
 });

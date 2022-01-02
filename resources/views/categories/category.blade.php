@@ -97,7 +97,7 @@
         <div class="modal-footer">
             <input type="hidden" id="id" name="id">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary updateSave">Save changes</button>
+          <button type="button" class="btn btn-primary updateSave" id="update">Save changes</button>
         </form>
         </div>
       </div>
@@ -236,6 +236,8 @@
                 })
             }else{
                 $('#update-form').submit();
+                $('#update').prop('disabled',true);
+
             }
         });
         /* Update data with ajax */
