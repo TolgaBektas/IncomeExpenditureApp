@@ -38,6 +38,7 @@
           <li class="nav-item d-sm-inline-block">
             <a href="{{ route('index') }}" class="nav-link">Home Page</a>
           </li>
+          
         </ul>
         <!-- NAVBAR Sol Taraf END -->
   
@@ -47,10 +48,12 @@
         <ul class="navbar-nav ml-auto">
           <!-- Cikis Yap START -->
           <form action="{{route('logout')}}" id="logout" method="POST">
+            <li id="time" class="nav-item d-none d-sm-inline-block"></li>
           <li class="nav-item d-none d-sm-inline-block">
               @csrf
             <a type="submit" class="nav-link" onclick="document.getElementById('logout').submit();">Logout</a>
           </li>
+          
       </form>
           <!-- Cikis Yap START -->
         </ul>
@@ -153,6 +156,24 @@
      <script src="{{asset('assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
      <script src="{{asset('assets/plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
      <script src="{{asset('assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
+     
+     <script>
+       function showTime() {
+    var date = new Date(),
+        utc = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          date.getHours(),
+          date.getMinutes(),
+          date.getSeconds()
+       );
+
+    document.getElementById('time').innerHTML = utc.toLocaleTimeString('tr-TR',{ weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  setInterval(showTime, 1000);
+     </script>
     @yield('js')
 </body>
 </html>
