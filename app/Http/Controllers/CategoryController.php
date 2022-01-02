@@ -16,7 +16,7 @@ class CategoryController extends Controller
     }
     public function categoryAddShow()
     {
-        return view('categories.category-add');
+        return view('categories.add');
     }
     public function categoryAdd(Request $request)
     {

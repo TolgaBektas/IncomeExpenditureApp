@@ -10,7 +10,7 @@
             <div class="col-md-12">
                 <h1 class="card-title">Categories</h1>
                 <div class="card-tools float-right">							
-                    <a href="{{ route('category.category-add') }}" class="btn bg-success btn-sm">Add New</a>
+                    <a href="{{ route('category.add') }}" class="btn bg-success btn-sm">Add New</a>
                 </div>
             </div>			
         </div>
