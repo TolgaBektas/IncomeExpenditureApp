@@ -95,6 +95,20 @@
                   <p>Category</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="{{ route('income.index') }}" class="nav-link">
+                  <i class="fas fa-dollar-sign"></i>
+                  <p>Income</p>
+                  <i class="fas fa-plus"></i>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('expenditure.index') }}" class="nav-link">
+                  <i class="fas fa-dollar-sign"></i>
+                  <p>Expenditure</p>
+                  <i class="fas fa-minus"></i>
+                </a>
+              </li>
              </ul>
           </nav>
           <!-- SIDEBAR MENULER END -->
