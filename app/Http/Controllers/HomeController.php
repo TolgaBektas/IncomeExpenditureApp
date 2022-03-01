@@ -39,6 +39,18 @@ class HomeController extends Controller
         $october = 0;
         $november = 0;
         $december = 0;
+        $year_incomes['January'] = $january;
+        $year_incomes['February'] = $february;
+        $year_incomes['March'] = $march;
+        $year_incomes['April'] = $april;
+        $year_incomes['May'] = $may;
+        $year_incomes['June'] = $june;
+        $year_incomes['July'] = $july;
+        $year_incomes['August'] = $august;
+        $year_incomes['September'] = $september;
+        $year_incomes['October'] = $october;
+        $year_incomes['November'] = $november;
+        $year_incomes['December'] = $december;
         $incomes = Income::whereYear('created_at', date('Y'))->where('status', 1)->orderBy('created_at')->get();
         foreach ($incomes as $income) {
             $total_year_income += $income->price;
@@ -108,6 +120,18 @@ class HomeController extends Controller
         $october = 0;
         $november = 0;
         $december = 0;
+        $year_expenditures['January'] = $january;
+        $year_expenditures['February'] = $february;
+        $year_expenditures['March'] = $march;
+        $year_expenditures['April'] = $april;
+        $year_expenditures['May'] = $may;
+        $year_expenditures['June'] = $june;
+        $year_expenditures['July'] = $july;
+        $year_expenditures['August'] = $august;
+        $year_expenditures['September'] = $september;
+        $year_expenditures['October'] = $october;
+        $year_expenditures['November'] = $november;
+        $year_expenditures['December'] = $december;
         foreach ($expenditures as $expenditure) {
             $total_year_expenditure += $expenditure->price;
             switch (\Carbon\Carbon::parse($expenditure->created_at)->format('F')) {
@@ -161,7 +185,6 @@ class HomeController extends Controller
                     break;
             }
         }
-
         return view('index', compact('total_month_income', 'total_month_expenditure', 'total_year_income', 'total_year_expenditure', 'year_incomes', 'year_expenditures'));
     }
 }
