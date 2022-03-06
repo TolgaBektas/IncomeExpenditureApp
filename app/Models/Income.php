@@ -11,4 +11,8 @@ class Income extends Model
     protected $guarded = [];
     protected $primaryKey = 'id';
     protected $table = 'income';
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }
