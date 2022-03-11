@@ -10,16 +10,15 @@ class HomeController extends Controller
 {
     public function index()
     {
-        /* dd(date('m')); */
         $total_month_income = 0;
         $total_month_expenditure = 0;
         $year_incomes = [];
         $year_expenditures = [];
-        $incomes = Income::whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->where('status', 1)->get('price');
+        $incomes = Income::whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->get('price');
         foreach ($incomes as $income) {
             $total_month_income += $income->price;
         }
-        $expenditures = Expenditure::whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->where('status', 1)->get('price');
+        $expenditures = Expenditure::whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->get('price');
         foreach ($expenditures as $expenditure) {
             $total_month_expenditure += $expenditure->price;
         }
@@ -51,7 +50,7 @@ class HomeController extends Controller
         $year_incomes['October'] = $october;
         $year_incomes['November'] = $november;
         $year_incomes['December'] = $december;
-        $incomes = Income::whereYear('created_at', date('Y'))->where('status', 1)->orderBy('created_at')->get();
+        $incomes = Income::whereYear('created_at', date('Y'))->orderBy('created_at')->get();
         foreach ($incomes as $income) {
             $total_year_income += $income->price;
             switch (\Carbon\Carbon::parse($income->created_at)->format('F')) {
@@ -107,7 +106,7 @@ class HomeController extends Controller
         }
 
 
-        $expenditures = Expenditure::whereYear('created_at', date('Y'))->where('status', 1)->orderBy('created_at')->get();
+        $expenditures = Expenditure::whereYear('created_at', date('Y'))->orderBy('created_at')->get();
         $january = 0;
         $february = 0;
         $march = 0;
