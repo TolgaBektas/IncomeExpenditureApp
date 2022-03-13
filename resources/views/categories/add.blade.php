@@ -20,7 +20,7 @@
                 </div>
                
                 <div class="form-check">
-                  <input type="checkbox" class="form-check-input" name="status" id="status">
+                  <input type="checkbox" checked class="form-check-input" name="status" id="status">
                   <label class="form-check-label" for="status">Status</label>
                 </div>
 
