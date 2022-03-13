@@ -19,7 +19,8 @@ class CreateIncomeTable extends Migration
             $table->bigInteger('category_id')->unsigned();
             $table->decimal('price', $precision = 8, $scale = 2);
             $table->string('invoice')->nullable();
-            $table->tinyInteger('status')->default(0);
+            $table->date('invoice_date');
+
             $table->timestamps();
 
 
