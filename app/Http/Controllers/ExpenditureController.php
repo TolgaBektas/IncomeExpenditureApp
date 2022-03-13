@@ -23,7 +23,7 @@ class ExpenditureController extends Controller
     public function expenditureAdd(Request $request)
     {
         $request->validate([
-            'invoice' => 'file|mimes:jpeg,png,jpg,gif',
+            'invoice' => 'file|mimes:jpeg,png,jpg,gif,pdf',
         ]);
         $invoice = $request->file('invoice');
 
@@ -74,7 +74,7 @@ class ExpenditureController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'invoice' => 'file|mimes:jpeg,png,jpg,gif',
+            'invoice' => 'file|mimes:jpeg,png,jpg,gif,pdf',
         ]);
         $invoice = $request->file('invoice');
         if ($invoice) {
