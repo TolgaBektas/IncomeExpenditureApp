@@ -16,7 +16,10 @@
               <div class="card-body">
                 <div class="form-group">
                   <label for="description">Description</label>
-                  <input type="text" class="form-control" id="description" name="description" placeholder="Enter a description...">
+                  <input type="text" class="form-control" id="description" name="description" value="{{ old('description') }}" placeholder="Enter a description...">
+                  @error('description')
+                  <span class="text-danger">{{$message}}</span>
+                @enderror
                 </div>
                 <div class="form-group">
                   <label>Category</label>
@@ -28,7 +31,10 @@
                 </div>
                 <div class="form-group">
                   <label for="price">Price</label>
-                  <input type="number" min="0.00" step="0.01" class="form-control" id="price" name="price" placeholder="Enter a price...">
+                  <input type="number" min="0.00" step="0.01" class="form-control" id="price" name="price" value="{{ old('price') }}" placeholder="Enter a price...">
+                  @error('price')
+                  <span class="text-danger">{{$message}}</span>
+                @enderror
                 </div>
                 <div class="form-group">
                   <label for="invoice">Invoice <small>*It can be pdf, jpg or png.</small></label>
@@ -37,11 +43,13 @@
                   <span class="text-danger">{{$message}}</span>
                 @enderror
                 </div>
-                <div class="form-check">
-                  <input type="checkbox" class="form-check-input" name="status" id="status">
-                  <label class="form-check-label" for="status">Money Has Taken <small>* If money has not taken then this income will not affect charts or analytics.</small></label>
+                <div class="form-group">
+                  <label for="invoice_date">Invoice Date</label>
+                  <input type="date"class="form-control" id="invoice_date" name="invoice_date" value="{{ old('invoice_date') }}">
+                  @error('invoice_date')
+                  <span class="text-danger">{{$message}}</span>
+                @enderror
                 </div>
-
               </div>
               <div class="card-footer">
                 <button type="button" id="add" class="btn btn-success">Save</button>
@@ -55,8 +63,19 @@
 <script>
    $(document).ready(function(){
  $('#add').click(function(){
-        if ($('#price').val().trim()=="") {
-            $('#price').focus();
+        if ($('#description').val().trim()=="") {
+            $('#description').focus();
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Description can not be empty!',
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            })
+            
+        }else if($('#price').val().trim()==""){
+          $('#price').focus();
             Swal.fire({
                 position: 'center',
                 icon: 'error',
@@ -65,7 +84,16 @@
                 timer: 2500,
                 timerProgressBar: true
             })
-            
+        }else if($('#invoice_date').val().trim()==""){
+          $('#invoice_date').focus();
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Invoice date can not be empty!',
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            })
         }else{
             $('#add-form').submit();
             $('#add').prop('disabled',true);
