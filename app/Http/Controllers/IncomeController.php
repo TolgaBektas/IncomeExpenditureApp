@@ -4,28 +4,57 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Income;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class IncomeController extends Controller
 {
     public function index()
     {
-        $incomes = Income::whereMonth('created_at', date('m'))->get();
+        $incomes = Income::with('category')->whereMonth('invoice_date', date('m'))->get();
+        $categories = Category::where('status', 1)->get();
+
+        return view('income.income', compact('incomes', 'categories'));
+    }
+    public function search(Request $request)
+    {
+        $request->validate([
+            'date_start' => 'required',
+            'date_finish' => 'required'
+        ]);
+
+        if ($request->date_start && $request->date_finish) {
+            $incomes = Income::whereBetween('invoice_date', [$request->date_start, $request->date_finish])->get();
+        }
+        if ($incomes->all() == null) {
+            Alert::error('No Matches Found', 'There are no invoice between these dates.');
+        }
         $categories = Category::where('status', 1)->get();
         return view('income.income', compact('incomes', 'categories'));
     }
     public function incomeAddShow()
     {
         $categories = Category::where('status', 1)->get();
-        return view('income.add', compact('categories'));
+
+        if ($categories->all()) {
+            return view('income.add', compact('categories'));
+        } else {
+            toast('You have to add some category first!', 'error');
+            return redirect()->route('income.index');
+        }
     }
     public function incomeAdd(Request $request)
     {
         $request->validate([
-            'invoice' => 'image|mimes:jpeg,png,jpg,gif',
+            'invoice' => 'file|mimes:jpeg,png,jpg,gif,pdf',
+            'invoice_date' => 'required',
+            'description' => 'required|max:255',
+            'price' => 'required',
+            'category_id' => 'required'
+
         ]);
+
         $invoice = $request->file('invoice');
 
         if ($invoice) {
@@ -41,22 +70,13 @@ class IncomeController extends Controller
             'category_id' => $request->category_id,
             'invoice' => $invoice ? $path . $name : '',
             'price' => $request->price,
-            'status' => $request->status ? 1 : 0
+            'invoice_date' => $request->invoice_date
 
         ]);
         toast('New income has been submited!', 'success');
         return redirect()->route('income.index');
     }
 
-    public function changeStatus(Request $request)
-    {
-        $id = $request->id;
-        $income = Income::find($id);
-        $status = $income->status;
-        $income->status = $status ? 0 : 1;
-        $income->save();
-        return response()->json(['message' => 'success', 'status' =>  $income->status], 200);
-    }
     public function delete(Request $request)
     {
         Income::destroy($request->id);
@@ -75,8 +95,13 @@ class IncomeController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'invoice' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2097152',
+            'invoice' => 'file|mimes:jpeg,png,jpg,gif,pdf',
+            'invoice_date' => 'required',
+            'description' => 'required|max:255',
+            'price' => 'required'
+
         ]);
+
         $invoice = $request->file('invoice');
         if ($invoice) {
             Storage::disk('public')->delete($request->old_invoice);
@@ -93,7 +118,7 @@ class IncomeController extends Controller
                 'category_id' => $request->category_id,
                 'invoice' => '',
                 'price' => $request->price,
-                'status' => $request->status ? 1 : 0
+                'invoice_date' => $request->invoice_date
 
             ]);
         } else {
@@ -102,7 +127,7 @@ class IncomeController extends Controller
                 'category_id' => $request->category_id,
                 'invoice' => $invoice ? $path . $name : $request->old_invoice,
                 'price' => $request->price,
-                'status' => $request->status ? 1 : 0
+                'invoice_date' => $request->invoice_date
 
             ]);
         }

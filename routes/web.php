@@ -20,9 +20,9 @@ Route::prefix('/')->middleware(['auth'])->group(function () {
     });
     Route::prefix('income')->group(function () {
         Route::get('/', [IncomeController::class, 'index'])->name("income.index");
+        Route::post('/', [IncomeController::class, 'search']);
         Route::get('/add', [IncomeController::class, 'incomeAddShow'])->name("income.add");
         Route::post('/add', [IncomeController::class, 'incomeAdd']);
-        Route::post('/changeStatus', [IncomeController::class, 'changeStatus'])->name("income.changeStatus");
         Route::post('/delete', [IncomeController::class, 'delete'])->name("income.delete");
         Route::get('/update/{id?}', [IncomeController::class, 'updateShow'])->name("income.updateShow");
         Route::put('/update', [IncomeController::class, 'update'])->name("income.update");

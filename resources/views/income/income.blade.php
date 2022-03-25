@@ -5,10 +5,44 @@
 
 @section('content')
 <div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="card-title">For other months, search in the form below.</a></h1>
+            </div>			
+        </div>
+    </div>
+    <div class="card-body">
+        <form class="row" method="POST" id="search-form">
+           @csrf           
+            <div class="col-md-2">
+                <label for="date_start" class="form-label">Date Start</label>
+                <input type="date" class="form-control" id="date_start" name="date_start">
+                @error('date_start')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
+                
+            </div>
+            <div class="col-md-2">
+                <label for="date_finish" class="form-label">Date Finish</label>
+                <input type="date" class="form-control" id="date_finish" name="date_finish">
+                @error('date_finish')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
+            </div>
+            
+            <div class="col-md-1">
+              <button type="button" class="btn btn-lg btn-info mt-4" id="search">Search</button>
+            </div>
+            
+          </form>
+    </div>
+</div>
+<div class="card">
 	<div class="card-header">
         <div class="row">
             <div class="col-md-12">
-                <h1 class="card-title">Incomes - This page shows only current month's incomes. For more details, see <a href="#">Analyze.</a></h1>
+                <h1 class="card-title">Incomes - This page shows only current month's incomes. For other months, search in the form above.</a></h1>
                 <div class="card-tools float-right">							
                     <a href="{{ route('income.add') }}" class="btn bg-success btn-sm">Add New</a>
                 </div>
@@ -24,9 +58,7 @@
 					<th>category</th>
 					<th>price</th>
 					<th>invoice</th>
-					<th>Money Has Taken</th>
-					<th>created at</th>
-					<th>updated at</th>
+					<th>invoice date</th>
                     <th colspan="1"></th>
 				</tr>
 			</thead>
@@ -34,41 +66,37 @@
                 @foreach ($incomes as $income)
                 <tr>
                     <td>{{ $income->id }}</td>
-                    <td>{{ $income->description }}</td>
-                    <td>{{ $categories->find($income->category_id)->name }}</td>
+                    <td width="55%">{{ $income->description }}</td>
+                    <td>{{ $income->category->name }}</td>
                     <td>{{ $income->price }}</td>
                     <td>
                     @if ($income->invoice)
-                        <a href="{{ asset( 'storage/'.$income->invoice) }}" class="btn btn-info" target="_blank">Invoice</a>
+                        <a href="{{ asset( 'storage/'.$income->invoice) }}" class="btn btn-success" target="_blank">Invoice</a>
                         @else
                         No Invoice
                         @endif      
                     </td>
 
-                    <td>
-                        @if ($income->status)
-                        <button type="submit" class="btn btn-success changeStatus" data-id="{{ $income->id }}">Yes</button>
-                        @else
-                        <button type="submit" class="btn btn-danger changeStatus" data-id="{{ $income->id }}">No</button>
-                        @endif                       
-                    </td>
-                    <td>{{ \Carbon\Carbon::parse($income->created_at)->format('d-m-Y H:i') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($income->updated_at)->format('d-m-Y H:i') }}</td>
+                    <td>{{ $income->invoice_date }}</td>
+                    
                    <td>
-                    <a href="{{ route('income.updateShow',$income->id ) }}" class="btn btn-info update" data-id="{{ $income->id }}"><i class="fas fa-pen"></i></a>
+                    <a href="{{ route('income.updateShow',$income->id ) }}" class="btn btn-secondary update" data-id="{{ $income->id }}"><i class="fas fa-pen"></i></a>
                     <button type="button" class="btn btn-danger delete" data-id="{{ $income->id }}"><i class="far fa-trash-alt"></i></button>
                    </td>
                 </tr>
                 @endforeach
             </tbody>
 		</table>
-	</div>			
+	</div>
 </div>
 
 @endsection
 @section('js')
 <script>
     $(document).ready(function(){
+        if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
         $(function () {
             $("#example1").DataTable({
                 "responsive": true,
@@ -76,49 +104,6 @@
             });
         });
         $.ajaxSetup({headers:{'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')}});
-        /* Change status with ajax */
-        $('.changeStatus').click(function(){
-            let dataID=$(this).data('id');
-            let self=$(this);
-            $.ajax({
-                url:'{{ route("income.changeStatus") }}',
-                method:'POST',
-                data:{id:dataID},
-                async:false,
-                success:function(response){
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 4000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-                    if (response.status==1) {
-                        self[0].classList.remove('btn-danger');
-                        self[0].classList.add('btn-success');
-                        self[0].innerText='Yes';
-                        Toast.fire({
-                            icon: 'success',
-                            title: dataID+' id income changed to Yen successfully'
-                        });
-                    }else{
-                        self[0].classList.remove('btn-success');
-                        self[0].classList.add('btn-danger');
-                        self[0].innerText='No';
-                        Toast.fire({
-                            icon: 'success',
-                            title: dataID+' id income changed to No successfully'
-                        });
-                    }
-                },
-                error:function(){}
-            });
-        });
-        /* Change status with ajax */
 
         /* Delete with ajax */
         $('#example1').on('click','.delete',function(){
@@ -153,54 +138,33 @@
         });
         /* Delete with ajax */
 
-        /* Update show data with ajax */
-        $('.update').click(function(){
-            let dataID=$(this).data('id');
-            /* let route='{{ route('category.updateShow',['id'=>'categoryEdit']) }}';
-            route=route.replace('categoryEdit',dataID); */
-            let incomeName=$('#nameUpdate');
-            let incomeStatus=$('#statusUpdate');
-            let incomeID=$('#idUpdate');
-            let id=$('#id');
-            $.ajax({
-                url:'{{ route('income.updateShow') }}',
-                method:'GET',
-                data:{id:dataID},
-                async:false,
-                success:function(response){
-                    let income=response.income;
-                    
-                    incomeName.val(income.name);
-                    incomeID.val(income.id);
-                    id.val(income.id);
-                    if (income.status) {                       
-                        incomeStatus.prop('checked',true);
-                    }else{                       
-                        incomeStatus.prop('checked',false);
-                    }
-                }
-            });
-        });
-        /* Update show data with ajax */
-
-        /* Update data with ajax */
-        $('.updateSave').click(function(){
-            if ($('#nameUpdate').val().trim()=="") {
-                $('#nameUpdate').focus();
-                Swal.fire({
+        $('#search').click(function(){
+        if ($('#date_start').val().trim()=="") {
+            $('#date_start').focus();
+            Swal.fire({
                 position: 'center',
                 icon: 'error',
-                title: 'Income can not be empty!',
+                title: 'Date start can not be empty!',
                 showConfirmButton: false,
                 timer: 2500,
                 timerProgressBar: true
-                })
-            }else{
-                $('#update-form').submit();
-            }
-        });
-        /* Update data with ajax */
-
+            })
+            
+        }else if($('#date_finish').val().trim()==""){
+          $('#date_finish').focus();
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Date finish can not be empty!',
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            })
+        }else{
+            $('#search-form').submit();
+            $('#search').prop('disabled',true);
+        }
+    });
     });
 </script>
 @endsection
