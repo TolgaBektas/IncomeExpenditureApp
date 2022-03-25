@@ -24,10 +24,14 @@
                 <div class="form-group">
                   <label>Category</label>
                   <select class="form-control" name="category_id" id="category_id">
+                    <option value="" disabled selected>--Select Category--</option>
                     @foreach ($categories as $item)
                     <option value="{{ $item->id }}">{{ $item->name }}</option>
                     @endforeach
                   </select>
+                  @error('category_id')
+                  <span class="text-danger">{{$message}}</span>
+                @enderror
                 </div>
                 <div class="form-group">
                   <label for="price">Price</label>
@@ -72,8 +76,17 @@
                 showConfirmButton: false,
                 timer: 2500,
                 timerProgressBar: true
+            })            
+        }else if($('#category_id').children("option:selected").val()==""){
+          $('#category_id').focus();
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Select a category!',
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
             })
-            
         }else if($('#price').val().trim()==""){
           $('#price').focus();
             Swal.fire({
