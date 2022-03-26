@@ -12,7 +12,7 @@ class IncomeController extends Controller
 {
     public function index()
     {
-        $incomes = Income::with('category')->whereMonth('invoice_date', date('m'))->get();
+        $incomes = Income::with('category')->whereMonth('invoice_date', date('m'))->whereYear('invoice_date', date('Y'))->get();
         $categories = Category::where('status', 1)->get();
 
         return view('income.income', compact('incomes', 'categories'));
