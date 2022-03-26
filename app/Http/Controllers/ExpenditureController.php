@@ -6,24 +6,51 @@ use App\Models\Category;
 use App\Models\Expenditure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class ExpenditureController extends Controller
 {
     public function index()
     {
-        $expenditures = Expenditure::whereMonth('created_at', date('m'))->get();
+        $expenditures = Expenditure::with('category')->whereMonth('invoice_date', date('m'))->whereYear('invoice_date', date('Y'))->get();
+        $categories = Category::where('status', 1)->get();
+        return view('expenditure.expenditure', compact('expenditures', 'categories'));
+    }
+    public function search(Request $request)
+    {
+        $request->validate([
+            'date_start' => 'required',
+            'date_finish' => 'required'
+        ]);
+
+        if ($request->date_start && $request->date_finish) {
+            $expenditures = Expenditure::whereBetween('invoice_date', [$request->date_start, $request->date_finish])->get();
+        }
+        if ($expenditures->all() == null) {
+            Alert::error('No Matches Found', 'There are no invoice between these dates.');
+        }
         $categories = Category::where('status', 1)->get();
         return view('expenditure.expenditure', compact('expenditures', 'categories'));
     }
     public function expenditureAddShow()
     {
         $categories = Category::where('status', 1)->get();
-        return view('expenditure.add', compact('categories'));
+
+        if ($categories->all()) {
+            return view('expenditure.add', compact('categories'));
+        } else {
+            toast('You have to add some category first!', 'error');
+            return redirect()->route('expenditure.index');
+        }
     }
     public function expenditureAdd(Request $request)
     {
         $request->validate([
             'invoice' => 'file|mimes:jpeg,png,jpg,gif,pdf',
+            'invoice_date' => 'required',
+            'description' => 'required|max:255',
+            'price' => 'required',
+            'category_id' => 'required'
         ]);
         $invoice = $request->file('invoice');
 
@@ -40,22 +67,13 @@ class ExpenditureController extends Controller
             'category_id' => $request->category_id,
             'invoice' => $invoice ? $path . $name : '',
             'price' => $request->price,
-            'status' => $request->status ? 1 : 0
+            'invoice_date' => $request->invoice_date
 
         ]);
         toast('New expenditure has been submited!', 'success');
         return redirect()->route('expenditure.index');
     }
 
-    public function changeStatus(Request $request)
-    {
-        $id = $request->id;
-        $expenditure = Expenditure::find($id);
-        $status = $expenditure->status;
-        $expenditure->status = $status ? 0 : 1;
-        $expenditure->save();
-        return response()->json(['message' => 'success', 'status' =>  $expenditure->status], 200);
-    }
     public function delete(Request $request)
     {
         Expenditure::destroy($request->id);
@@ -75,7 +93,12 @@ class ExpenditureController extends Controller
     {
         $request->validate([
             'invoice' => 'file|mimes:jpeg,png,jpg,gif,pdf',
+            'invoice_date' => 'required',
+            'description' => 'required|max:255',
+            'price' => 'required'
+
         ]);
+
         $invoice = $request->file('invoice');
         if ($invoice) {
             Storage::disk('public')->delete($request->old_invoice);
@@ -92,8 +115,7 @@ class ExpenditureController extends Controller
                 'category_id' => $request->category_id,
                 'invoice' => '',
                 'price' => $request->price,
-                'status' => $request->status ? 1 : 0
-
+                'invoice_date' => $request->invoice_date
             ]);
         } else {
             Expenditure::where('id', $request->id)->update([
@@ -101,7 +123,7 @@ class ExpenditureController extends Controller
                 'category_id' => $request->category_id,
                 'invoice' => $invoice ? $path . $name : $request->old_invoice,
                 'price' => $request->price,
-                'status' => $request->status ? 1 : 0
+                'invoice_date' => $request->invoice_date
 
             ]);
         }
