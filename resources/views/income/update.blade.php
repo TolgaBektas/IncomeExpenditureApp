@@ -18,6 +18,9 @@
             <div class="form-group">
                 <label for="description">Description</label>
                 <input type="text" class="form-control" id="description" name="description" value="{{ $income->description }}" placeholder="Enter a description...">
+                @error('description')
+                <span class="text-danger">{{$message}}</span>
+              @enderror  
             </div>
 
             <div class="form-group">
@@ -32,6 +35,9 @@
             <div class="form-group">
                 <label for="price">Price</label>
                 <input type="number" min="0.00" step="0.01" class="form-control" id="price" name="price" value="{{ $income->price }}" placeholder="Enter a price...">
+                @error('price')
+                <span class="text-danger">{{$message}}</span>
+              @enderror  
             </div>
             @if ($income->invoice)
             <div class="form-group">
@@ -87,7 +93,7 @@
             })
             
         }else if($('#price').val().trim()==""){
-          $('#description').focus();
+          $('#price').focus();
             Swal.fire({
                 position: 'center',
                 icon: 'error',
