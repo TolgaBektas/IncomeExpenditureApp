@@ -11,4 +11,8 @@ class Expenditure extends Model
     protected $guarded = [];
     protected $primaryKey = 'id';
     protected $table = 'expenditure';
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }
