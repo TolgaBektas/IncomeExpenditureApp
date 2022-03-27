@@ -4,28 +4,47 @@ namespace App\Http\Controllers;
 
 use App\Models\Expenditure;
 use App\Models\Income;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $years = [];
+        $income_years = Income::get('invoice_date');
+        foreach ($income_years as $year) {
+            array_push($years, Carbon::createFromFormat('Y-m-d', $year->invoice_date)->format('Y'));
+        }
+        $expenditure_years = Expenditure::get('invoice_date');
+        foreach ($expenditure_years as $year) {
+            array_push($years, Carbon::createFromFormat('Y-m-d', $year->invoice_date)->format('Y'));
+        }
+        asort($years);
+        $years = array_unique($years);
+        if ($request->all()) {
+            $incomes_month = Income::whereMonth('invoice_date', date('m'))->whereYear('invoice_date', $request->all()['q'])->get();
+            $expenditures_month = Expenditure::whereMonth('invoice_date', date('m'))->whereYear('invoice_date', $request->all()['q'])->get();
+            $incomes_years = Income::whereYear('invoice_date', $request->all()['q'])->orderBy('invoice_date')->get();
+            $expenditures_years = Expenditure::whereYear('invoice_date', $request->all()['q'])->orderBy('invoice_date')->get();
+        } else {
+            $incomes_month = Income::whereMonth('invoice_date', date('m'))->whereYear('invoice_date', date('Y'))->get();
+            $expenditures_month = Expenditure::whereMonth('invoice_date', date('m'))->whereYear('invoice_date', date('Y'))->get();
+            $incomes_years = Income::whereYear('invoice_date', date('Y'))->orderBy('invoice_date')->get();
+            $expenditures_years = Expenditure::whereYear('invoice_date', date('Y'))->orderBy('invoice_date')->get();
+        }
         $total_month_income = 0;
         $total_month_expenditure = 0;
         $year_incomes = [];
         $year_expenditures = [];
-        $incomes = Income::whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->get('price');
-        foreach ($incomes as $income) {
-            $total_month_income += $income->price;
-        }
-        $expenditures = Expenditure::whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->get('price');
-        foreach ($expenditures as $expenditure) {
-            $total_month_expenditure += $expenditure->price;
-        }
-
         $total_year_income = 0;
         $total_year_expenditure = 0;
-
+        foreach ($incomes_month as $income) {
+            $total_month_income += $income->price;
+        }
+        foreach ($expenditures_month as $expenditure) {
+            $total_month_expenditure += $expenditure->price;
+        }
         $january = 0;
         $february = 0;
         $march = 0;
@@ -50,63 +69,61 @@ class HomeController extends Controller
         $year_incomes['October'] = $october;
         $year_incomes['November'] = $november;
         $year_incomes['December'] = $december;
-        $incomes = Income::whereYear('created_at', date('Y'))->orderBy('created_at')->get();
-        foreach ($incomes as $income) {
+        foreach ($incomes_years as $income) {
             $total_year_income += $income->price;
-            switch (\Carbon\Carbon::parse($income->created_at)->format('F')) {
+            switch (\Carbon\Carbon::parse($income->invoice_date)->format('F')) {
                 case 'January':
                     $january += $income->price;
-                    $year_incomes[\Carbon\Carbon::parse($income->created_at)->format('F')] = $january;
+                    $year_incomes[\Carbon\Carbon::parse($income->invoice_date)->format('F')] = $january;
                     break;
                 case 'February':
                     $february += $income->price;
-                    $year_incomes[\Carbon\Carbon::parse($income->created_at)->format('F')] = $february;
+                    $year_incomes[\Carbon\Carbon::parse($income->invoice_date)->format('F')] = $february;
                     break;
                 case 'March':
                     $march += $income->price;
-                    $year_incomes[\Carbon\Carbon::parse($income->created_at)->format('F')] = $march;
+                    $year_incomes[\Carbon\Carbon::parse($income->invoice_date)->format('F')] = $march;
                     break;
                 case 'April':
                     $april += $income->price;
-                    $year_incomes[\Carbon\Carbon::parse($income->created_at)->format('F')] = $april;
+                    $year_incomes[\Carbon\Carbon::parse($income->invoice_date)->format('F')] = $april;
                     break;
                 case 'May':
                     $may += $income->price;
-                    $year_incomes[\Carbon\Carbon::parse($income->created_at)->format('F')] = $may;
+                    $year_incomes[\Carbon\Carbon::parse($income->invoice_date)->format('F')] = $may;
                     break;
                 case 'June':
                     $june += $income->price;
-                    $year_incomes[\Carbon\Carbon::parse($income->created_at)->format('F')] = $june;
+                    $year_incomes[\Carbon\Carbon::parse($income->invoice_date)->format('F')] = $june;
                     break;
                 case 'July':
                     $july += $income->price;
-                    $year_incomes[\Carbon\Carbon::parse($income->created_at)->format('F')] = $july;
+                    $year_incomes[\Carbon\Carbon::parse($income->invoice_date)->format('F')] = $july;
                     break;
                 case 'August':
                     $august += $income->price;
-                    $year_incomes[\Carbon\Carbon::parse($income->created_at)->format('F')] = $august;
+                    $year_incomes[\Carbon\Carbon::parse($income->invoice_date)->format('F')] = $august;
                     break;
                 case 'September':
                     $september += $income->price;
-                    $year_incomes[\Carbon\Carbon::parse($income->created_at)->format('F')] = $september;
+                    $year_incomes[\Carbon\Carbon::parse($income->invoice_date)->format('F')] = $september;
                     break;
                 case 'October':
                     $october += $income->price;
-                    $year_incomes[\Carbon\Carbon::parse($income->created_at)->format('F')] = $october;
+                    $year_incomes[\Carbon\Carbon::parse($income->invoice_date)->format('F')] = $october;
                     break;
                 case 'November':
                     $november += $income->price;
-                    $year_incomes[\Carbon\Carbon::parse($income->created_at)->format('F')] = $november;
+                    $year_incomes[\Carbon\Carbon::parse($income->invoice_date)->format('F')] = $november;
                     break;
                 case 'December':
                     $december += $income->price;
-                    $year_incomes[\Carbon\Carbon::parse($income->created_at)->format('F')] = $december;
+                    $year_incomes[\Carbon\Carbon::parse($income->invoice_date)->format('F')] = $december;
                     break;
             }
         }
 
 
-        $expenditures = Expenditure::whereYear('created_at', date('Y'))->orderBy('created_at')->get();
         $january = 0;
         $february = 0;
         $march = 0;
@@ -131,59 +148,59 @@ class HomeController extends Controller
         $year_expenditures['October'] = $october;
         $year_expenditures['November'] = $november;
         $year_expenditures['December'] = $december;
-        foreach ($expenditures as $expenditure) {
+        foreach ($expenditures_years as $expenditure) {
             $total_year_expenditure += $expenditure->price;
-            switch (\Carbon\Carbon::parse($expenditure->created_at)->format('F')) {
+            switch (\Carbon\Carbon::parse($expenditure->invoice_date)->format('F')) {
                 case 'January':
                     $january += $expenditure->price;
-                    $year_expenditures[\Carbon\Carbon::parse($expenditure->created_at)->format('F')] = $january;
+                    $year_expenditures[\Carbon\Carbon::parse($expenditure->invoice_date)->format('F')] = $january;
                     break;
                 case 'February':
                     $february += $expenditure->price;
-                    $year_expenditures[\Carbon\Carbon::parse($expenditure->created_at)->format('F')] = $february;
+                    $year_expenditures[\Carbon\Carbon::parse($expenditure->invoice_date)->format('F')] = $february;
                     break;
                 case 'March':
                     $march += $expenditure->price;
-                    $year_expenditures[\Carbon\Carbon::parse($expenditure->created_at)->format('F')] = $march;
+                    $year_expenditures[\Carbon\Carbon::parse($expenditure->invoice_date)->format('F')] = $march;
                     break;
                 case 'April':
                     $april += $expenditure->price;
-                    $year_expenditures[\Carbon\Carbon::parse($expenditure->created_at)->format('F')] = $april;
+                    $year_expenditures[\Carbon\Carbon::parse($expenditure->invoice_date)->format('F')] = $april;
                     break;
                 case 'May':
                     $may += $expenditure->price;
-                    $year_expenditures[\Carbon\Carbon::parse($expenditure->created_at)->format('F')] = $may;
+                    $year_expenditures[\Carbon\Carbon::parse($expenditure->invoice_date)->format('F')] = $may;
                     break;
                 case 'June':
                     $june += $expenditure->price;
-                    $year_expenditures[\Carbon\Carbon::parse($expenditure->created_at)->format('F')] = $june;
+                    $year_expenditures[\Carbon\Carbon::parse($expenditure->invoice_date)->format('F')] = $june;
                     break;
                 case 'July':
                     $july += $expenditure->price;
-                    $year_expenditures[\Carbon\Carbon::parse($expenditure->created_at)->format('F')] = $july;
+                    $year_expenditures[\Carbon\Carbon::parse($expenditure->invoice_date)->format('F')] = $july;
                     break;
                 case 'August':
                     $august += $expenditure->price;
-                    $year_expenditures[\Carbon\Carbon::parse($expenditure->created_at)->format('F')] = $august;
+                    $year_expenditures[\Carbon\Carbon::parse($expenditure->invoice_date)->format('F')] = $august;
                     break;
                 case 'September':
                     $september += $expenditure->price;
-                    $year_expenditures[\Carbon\Carbon::parse($expenditure->created_at)->format('F')] = $september;
+                    $year_expenditures[\Carbon\Carbon::parse($expenditure->invoice_date)->format('F')] = $september;
                     break;
                 case 'October':
                     $october += $expenditure->price;
-                    $year_expenditures[\Carbon\Carbon::parse($expenditure->created_at)->format('F')] = $october;
+                    $year_expenditures[\Carbon\Carbon::parse($expenditure->invoice_date)->format('F')] = $october;
                     break;
                 case 'November':
                     $november += $expenditure->price;
-                    $year_expenditures[\Carbon\Carbon::parse($expenditure->created_at)->format('F')] = $november;
+                    $year_expenditures[\Carbon\Carbon::parse($expenditure->invoice_date)->format('F')] = $november;
                     break;
                 case 'December':
                     $december += $expenditure->price;
-                    $year_expenditures[\Carbon\Carbon::parse($expenditure->created_at)->format('F')] = $december;
+                    $year_expenditures[\Carbon\Carbon::parse($expenditure->invoice_date)->format('F')] = $december;
                     break;
             }
         }
-        return view('index', compact('total_month_income', 'total_month_expenditure', 'total_year_income', 'total_year_expenditure', 'year_incomes', 'year_expenditures'));
+        return view('index', compact('total_month_income', 'total_month_expenditure', 'total_year_income', 'total_year_expenditure', 'year_incomes', 'year_expenditures', 'years'));
     }
 }
