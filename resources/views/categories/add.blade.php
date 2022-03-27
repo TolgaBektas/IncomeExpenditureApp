@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('title')
-    Category Add
+<a href="{{ route('category.index') }}">Categories</a> / Category Add
 @endsection
 
 @section('content')

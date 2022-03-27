@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('title')
-    Expenditure Add
+<a href="{{ route('expenditure.index') }}">Expenditures</a> / Expenditure Add
 @endsection
 
 @section('content')
