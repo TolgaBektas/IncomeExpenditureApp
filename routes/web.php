@@ -29,9 +29,9 @@ Route::prefix('/')->middleware(['auth'])->group(function () {
     });
     Route::prefix('expenditure')->group(function () {
         Route::get('/', [ExpenditureController::class, 'index'])->name("expenditure.index");
+        Route::post('/', [ExpenditureController::class, 'search']);
         Route::get('/add', [ExpenditureController::class, 'expenditureAddShow'])->name("expenditure.add");
         Route::post('/add', [ExpenditureController::class, 'expenditureAdd']);
-        Route::post('/changeStatus', [ExpenditureController::class, 'changeStatus'])->name("expenditure.changeStatus");
         Route::post('/delete', [ExpenditureController::class, 'delete'])->name("expenditure.delete");
         Route::get('/update/{id?}', [ExpenditureController::class, 'updateShow'])->name("expenditure.updateShow");
         Route::put('/update', [ExpenditureController::class, 'update'])->name("expenditure.update");
