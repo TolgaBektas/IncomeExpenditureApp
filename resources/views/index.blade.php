@@ -5,7 +5,22 @@ Income Expenditure
 @section('css')
 
 @endsection
+@section('topmenu')
+<form action="" method="GET">
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+    Select Year
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" name="year" id="year">
+    @foreach ($years as $year)
+    <li><a class="dropdown-item" name="query" href="{{ route('index','q='.$year) }}">{{ $year }}</a></li>
+    @endforeach    
+  </ul>
+</div>
+</form>
+@endsection
 @section('content')
+
 <div class="row">
   <div class="col-md-6">
     {{-- donut chart --}}

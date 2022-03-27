@@ -27,7 +27,7 @@
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-  
+      
       <!-- NAVBAR START -->
       <nav class="main-header navbar navbar-expand navbar-white navbar-light">
         <!-- NAVBAR Sol Taraf START -->
@@ -41,8 +41,7 @@
           
         </ul>
         <!-- NAVBAR Sol Taraf END -->
-  
-  
+        @yield('topmenu')
   
         <!-- NAVBAR Sag Taraf START -->
         <ul class="navbar-nav ml-auto">
