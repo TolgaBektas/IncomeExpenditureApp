@@ -13,9 +13,7 @@ class IncomeController extends Controller
     public function index()
     {
         $incomes = Income::with('category')->whereMonth('invoice_date', date('m'))->whereYear('invoice_date', date('Y'))->get();
-        $categories = Category::where('status', 1)->get();
-
-        return view('income.income', compact('incomes', 'categories'));
+        return view('income.income', compact('incomes'));
     }
     public function search(Request $request)
     {
@@ -25,13 +23,12 @@ class IncomeController extends Controller
         ]);
 
         if ($request->date_start && $request->date_finish) {
-            $incomes = Income::whereBetween('invoice_date', [$request->date_start, $request->date_finish])->get();
+            $incomes = Income::with('category')->whereBetween('invoice_date', [$request->date_start, $request->date_finish])->get();
         }
         if ($incomes->all() == null) {
             Alert::error('No Matches Found', 'There are no invoice between these dates.');
         }
-        $categories = Category::where('status', 1)->get();
-        return view('income.income', compact('incomes', 'categories'));
+        return view('income.income', compact('incomes'));
     }
     public function incomeAddShow()
     {

@@ -13,8 +13,7 @@ class ExpenditureController extends Controller
     public function index()
     {
         $expenditures = Expenditure::with('category')->whereMonth('invoice_date', date('m'))->whereYear('invoice_date', date('Y'))->get();
-        $categories = Category::where('status', 1)->get();
-        return view('expenditure.expenditure', compact('expenditures', 'categories'));
+        return view('expenditure.expenditure', compact('expenditures'));
     }
     public function search(Request $request)
     {
@@ -24,13 +23,12 @@ class ExpenditureController extends Controller
         ]);
 
         if ($request->date_start && $request->date_finish) {
-            $expenditures = Expenditure::whereBetween('invoice_date', [$request->date_start, $request->date_finish])->get();
+            $expenditures = Expenditure::with('category')->whereBetween('invoice_date', [$request->date_start, $request->date_finish])->get();
         }
         if ($expenditures->all() == null) {
             Alert::error('No Matches Found', 'There are no invoice between these dates.');
         }
-        $categories = Category::where('status', 1)->get();
-        return view('expenditure.expenditure', compact('expenditures', 'categories'));
+        return view('expenditure.expenditure', compact('expenditures'));
     }
     public function expenditureAddShow()
     {
