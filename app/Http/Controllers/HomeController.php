@@ -22,14 +22,13 @@ class HomeController extends Controller
         }
         asort($years);
         $years = array_unique($years);
+        $incomes_month = Income::whereMonth('invoice_date', date('m'))->whereYear('invoice_date', date('Y'))->get();
+        $expenditures_month = Expenditure::whereMonth('invoice_date', date('m'))->whereYear('invoice_date', date('Y'))->get();
+
         if ($request->all()) {
-            $incomes_month = Income::whereMonth('invoice_date', date('m'))->whereYear('invoice_date', $request->all()['q'])->get();
-            $expenditures_month = Expenditure::whereMonth('invoice_date', date('m'))->whereYear('invoice_date', $request->all()['q'])->get();
             $incomes_years = Income::whereYear('invoice_date', $request->all()['q'])->orderBy('invoice_date')->get();
             $expenditures_years = Expenditure::whereYear('invoice_date', $request->all()['q'])->orderBy('invoice_date')->get();
         } else {
-            $incomes_month = Income::whereMonth('invoice_date', date('m'))->whereYear('invoice_date', date('Y'))->get();
-            $expenditures_month = Expenditure::whereMonth('invoice_date', date('m'))->whereYear('invoice_date', date('Y'))->get();
             $incomes_years = Income::whereYear('invoice_date', date('Y'))->orderBy('invoice_date')->get();
             $expenditures_years = Expenditure::whereYear('invoice_date', date('Y'))->orderBy('invoice_date')->get();
         }
