@@ -67,17 +67,7 @@
 <script>
   $(document).ready(function(){
 $('#add').click(function(){
-       if ($('#description').val().trim()=="") {
-           $('#description').focus();
-           Swal.fire({
-               position: 'center',
-               icon: 'error',
-               title: 'Description can not be empty!',
-               showConfirmButton: false,
-               timer: 2500,
-               timerProgressBar: true
-           })            
-       }else if($('#category_id').children("option:selected").val()==""){
+       if($('#category_id').children("option:selected").val()==""){
          $('#category_id').focus();
            Swal.fire({
                position: 'center',

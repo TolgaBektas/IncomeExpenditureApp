@@ -60,7 +60,7 @@ class ExpenditureController extends Controller
         $request->validate([
             'invoice' => 'file|mimes:jpeg,png,jpg,gif,pdf',
             'invoice_date' => 'required',
-            'description' => 'required|max:255',
+            'description' => 'max:255',
             'price' => 'required',
             'category_id' => 'required'
         ]);
