@@ -13,7 +13,15 @@ class IncomeController extends Controller
     public function index()
     {
         $incomes = Income::with('category')->whereMonth('invoice_date', date('m'))->whereYear('invoice_date', date('Y'))->get();
-        return view('income.income', compact('incomes'));
+        $data = [];
+        foreach ($incomes as $income) {
+            $data[$income->category->name][] = $income->price;
+        }
+        foreach ($data as $key => $value) {
+            $data[$key] = array_sum($value);
+        }
+
+        return view('income.income', compact('incomes', 'data'));
     }
     public function search(Request $request)
     {
@@ -23,12 +31,19 @@ class IncomeController extends Controller
         ]);
 
         if ($request->date_start && $request->date_finish) {
-            $incomes = Income::with('category')->whereBetween('invoice_date', [$request->date_start, $request->date_finish])->get();
+            $incomes = Income::with('category')->whereBetween('invoice_date', [$request->date_start, $request->date_finish])->orderBy('category_id', 'asc')->get();
         }
         if ($incomes->all() == null) {
-            Alert::error('No Matches Found', 'There are no invoice between these dates.');
+            Alert::error('No Matches Found', 'There are no invoices between these dates.');
         }
-        return view('income.income', compact('incomes'));
+        $data = [];
+        foreach ($incomes as $income) {
+            $data[$income->category->name][] = $income->price;
+        }
+        foreach ($data as $key => $value) {
+            $data[$key] = array_sum($value);
+        }
+        return view('income.income', compact('incomes', 'data'));
     }
     public function incomeAddShow()
     {

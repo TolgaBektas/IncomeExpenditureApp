@@ -13,7 +13,14 @@ class ExpenditureController extends Controller
     public function index()
     {
         $expenditures = Expenditure::with('category')->whereMonth('invoice_date', date('m'))->whereYear('invoice_date', date('Y'))->get();
-        return view('expenditure.expenditure', compact('expenditures'));
+        $data = [];
+        foreach ($expenditures as $expenditure) {
+            $data[$expenditure->category->name][] = $expenditure->price;
+        }
+        foreach ($data as $key => $value) {
+            $data[$key] = array_sum($value);
+        }
+        return view('expenditure.expenditure', compact('expenditures', 'data'));
     }
     public function search(Request $request)
     {
@@ -28,7 +35,14 @@ class ExpenditureController extends Controller
         if ($expenditures->all() == null) {
             Alert::error('No Matches Found', 'There are no invoice between these dates.');
         }
-        return view('expenditure.expenditure', compact('expenditures'));
+        $data = [];
+        foreach ($expenditures as $expenditure) {
+            $data[$expenditure->category->name][] = $expenditure->price;
+        }
+        foreach ($data as $key => $value) {
+            $data[$key] = array_sum($value);
+        }
+        return view('expenditure.expenditure', compact('expenditures', 'data'));
     }
     public function expenditureAddShow()
     {
