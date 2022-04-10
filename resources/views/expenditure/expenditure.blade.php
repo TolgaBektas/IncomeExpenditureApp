@@ -206,7 +206,7 @@
                     text: 'Total prices with categories'
                 },
                 tooltip: {
-                    pointFormat: '{series.name}: <b>{point.y:.1f}$</b>'
+                    pointFormat: '{series.name}: <b>{point.y:.2f}$</b>'
                 },
                 accessibility: {
                     point: {
@@ -219,7 +219,7 @@
                         cursor: 'pointer',
                         dataLabels: {
                             enabled: true,
-                            format: '<b>{point.name}</b>: {point.y:.1f}$'
+                            format: '<b>{point.name}</b>: {point.y:.2f}$'
                         },
                         showInLegend: true
                     }
@@ -272,7 +272,7 @@ Highcharts.chart('container2', {
             borderWidth: 0,
             dataLabels: {
                 enabled: true,
-                format: '{point.y:.1f}$'
+                format: '{point.y:.2f}$'
             }
         }
     },
