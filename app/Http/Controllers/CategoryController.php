@@ -12,11 +12,11 @@ class CategoryController extends Controller
         $categories = Category::all();
         /* $categories=DB::table('categories')->get(); */
 
-        return view('categories.category', compact('categories'));
+        return view('category.category', compact('categories'));
     }
     public function categoryAddShow()
     {
-        return view('categories.add');
+        return view('category.add');
     }
     public function categoryAdd(Request $request)
     {
