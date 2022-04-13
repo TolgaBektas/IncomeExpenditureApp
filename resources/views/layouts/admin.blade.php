@@ -50,8 +50,8 @@
             <ul class="navbar-nav ml-auto">
                 <!-- Cikis Yap START -->
                 <form action="{{ route('logout') }}" id="logout" method="POST">
-                    <li id="time" class="nav-item d-none d-sm-inline-block"></li>
-                    <li class="nav-item d-none d-sm-inline-block">
+                    <li id="time" class="nav-item d-sm-inline-block"></li>
+                    <li class="nav-item d-sm-inline-block">
                         @csrf
                         <a type="submit" class="nav-link"
                             onclick="document.getElementById('logout').submit();">Logout</a>
