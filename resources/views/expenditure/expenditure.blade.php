@@ -307,7 +307,7 @@ Highcharts.chart('container2', {
             });
 
             /* Delete with ajax */
-            $('#example1').on('click', '.delete', function() {
+            $('#example').on('click', '.delete', function() {
                 let self = $(this);
                 let dataID = $(this).data('id');
                 Swal.fire({
