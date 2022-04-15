@@ -94,6 +94,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="{{route('profile')}}" class="nav-link">
+                              <i class="fas fa-user"></i>
+                              <p>Profile</p>
+                            </a>
+                          </li>
+                        <li class="nav-item">
                             <a href="{{ route('category.index') }}" class="nav-link">
                                 <i class="fas fa-list"></i>
                                 <p>Category</p>

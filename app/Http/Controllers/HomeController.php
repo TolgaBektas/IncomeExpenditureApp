@@ -6,6 +6,7 @@ use App\Models\Expenditure;
 use App\Models\Income;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -201,5 +202,10 @@ class HomeController extends Controller
             }
         }
         return view('index', compact('total_month_income', 'total_month_expenditure', 'total_year_income', 'total_year_expenditure', 'year_incomes', 'year_expenditures', 'years'));
+    }
+    public function profile()
+    {
+        $user = Auth::user();
+        return view('auth.profile', compact('user'));
     }
 }

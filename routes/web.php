@@ -9,6 +9,7 @@ use App\Http\Controllers\IncomeController;
 
 Route::prefix('/')->middleware(['auth'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name("index");
+    Route::get('/profile', [HomeController::class, 'profile'])->name("profile");
     Route::prefix('category')->group(function () {
         Route::get('/', [CategoryController::class, 'index'])->name("category.index");
         Route::get('/add', [CategoryController::class, 'categoryAddShow'])->name("category.add");
