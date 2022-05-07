@@ -7,6 +7,9 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExpenditureController;
 use App\Http\Controllers\IncomeController;
 
+//Role 0 => Guest
+//Role 1 => Admin
+//Role 2 => Manager
 Route::prefix('/')->middleware(['auth'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name("index");
     Route::get('/profile', [HomeController::class, 'profile'])->name("profile");
@@ -16,7 +19,7 @@ Route::prefix('/')->middleware(['auth'])->group(function () {
         Route::post('/add', [CategoryController::class, 'categoryAdd'])->middleware('role:1,2');
         Route::post('/changeStatus', [CategoryController::class, 'changeStatus'])->middleware('role:1,2')->name("category.changeStatus");
         Route::post('/delete', [CategoryController::class, 'delete'])->middleware('role:1,2')->name("category.delete");
-        Route::get('/update', [CategoryController::class, 'updateShow'])->middleware('role:1,2')->name("category.updateShow");
+        Route::get('/update', [CategoryController::class, 'updateShow'])->name("category.updateShow");
         Route::put('/update', [CategoryController::class, 'update'])->middleware('role:1,2')->name("category.update");
     });
     Route::prefix('income')->group(function () {
@@ -25,7 +28,7 @@ Route::prefix('/')->middleware(['auth'])->group(function () {
         Route::get('/add', [IncomeController::class, 'incomeAddShow'])->middleware('role:1,2')->name("income.add");
         Route::post('/add', [IncomeController::class, 'incomeAdd'])->middleware('role:1,2');
         Route::post('/delete', [IncomeController::class, 'delete'])->middleware('role:1,2')->name("income.delete");
-        Route::get('/update/{id?}', [IncomeController::class, 'updateShow'])->middleware('role:1,2')->name("income.updateShow");
+        Route::get('/update/{id?}', [IncomeController::class, 'updateShow'])->name("income.updateShow");
         Route::put('/update', [IncomeController::class, 'update'])->middleware('role:1,2')->name("income.update");
     });
     Route::prefix('expenditure')->group(function () {
@@ -34,7 +37,7 @@ Route::prefix('/')->middleware(['auth'])->group(function () {
         Route::get('/add', [ExpenditureController::class, 'expenditureAddShow'])->middleware('role:1,2')->name("expenditure.add");
         Route::post('/add', [ExpenditureController::class, 'expenditureAdd'])->middleware('role:1,2');
         Route::post('/delete', [ExpenditureController::class, 'delete'])->middleware('role:1,2')->name("expenditure.delete");
-        Route::get('/update/{id?}', [ExpenditureController::class, 'updateShow'])->middleware('role:1,2')->name("expenditure.updateShow");
+        Route::get('/update/{id?}', [ExpenditureController::class, 'updateShow'])->name("expenditure.updateShow");
         Route::put('/update', [ExpenditureController::class, 'update'])->middleware('role:1,2')->name("expenditure.update");
     });
 });
